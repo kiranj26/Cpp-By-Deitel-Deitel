@@ -187,5 +187,78 @@ int main() {
         cout << "\n";
     }
 
+    /* ============================================================================
+    EX15: Print only unique numbers from user input (range-limited input)
+    Problem statement:
+    - Ask the user for 20 integers.
+    - Each number is guaranteed to be in the range [10, 100] inclusive.
+    - As each number is read, print it ONLY if it has not appeared before.
+    - Worst case: all 20 numbers are unique → all 20 are printed.
+    - Constraint: Use the SMALLEST possible array.
+
+    Interview-style reasoning:
+    1) Even though we read 20 numbers, the VALUE RANGE is fixed and small: 10..100.
+        Total possible distinct values = 100 - 10 + 1 = 91.
+
+    2) Because the range is known in advance, we do NOT need:
+        - nested loops
+        - searching previously entered numbers
+        - storing all 20 values
+
+    3) Instead, we track whether a VALUE has appeared before.
+
+    Mapping idea:
+    - Value range: 10..100
+    - Array indices: 0..90
+    - Mapping formula:
+            index = value - 10
+
+    Presence logic:
+    - If presence[index] == false:
+            → first occurrence
+            → print value
+            → mark presence[index] = true
+    - Else:
+            → duplicate
+            → do nothing
+
+    Why this uses the smallest possible array:
+    - One boolean per possible value → 91 elements total.
+    - Smaller and faster than storing inputs and searching.
+    - Absolute minimum could be bits, but boolean array is ideal here.
+
+    Time complexity:
+    - O(20) → one constant-time check per input.
+
+    Space complexity:
+    - O(91) → fixed, independent of number of inputs.
+    ========================================================================== */
+    {
+        const int kMinValue = 10;
+        const int kMaxValue = 100;
+        const int kRangeSize = (kMaxValue - kMinValue + 1); // 91
+        const int kInputCount = 20;
+
+        bool seen[kRangeSize] = {false};
+
+        cout << "EX15 Enter 20 numbers (each between 10 and 100):\n";
+
+        for (int i = 0; i < kInputCount; i++) {
+            int value = 0;
+            cin >> value;
+
+            // Map value (10..100) to index (0..90)
+            int index = value - kMinValue;
+
+            // Since problem guarantees valid range, no extra validation needed
+            if (!seen[index]) {
+                cout << value << " ";
+                seen[index] = true;
+            }
+        }
+
+        cout << "\n\n";
+    }
+
     return 0;
 }
