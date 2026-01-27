@@ -78,6 +78,30 @@ void printSquareOfCharacter(int side) {
     cout << '\n';
 }
 
+/* ============================================================================
+   Helper 5 : Seconds elapsed since the last time the clock struck 12
+   - Input time is in 12-hour format: HH:MM:SS
+   - Hours allowed: 1..12 (12 maps to 0 elapsed hours)
+   - Minutes/Seconds: 0..59
+   ========================================================================== */
+int secondsFromTwelve(int h, int m, int s) {
+    // Normalize 12 -> 0 (because 12:xx:yy is the start of the cycle)
+    if (h == 12) {
+        h = 0;
+    }
+    return (h * 60 * 60) + (m * 60) + s;
+}
+
+/* ============================================================================
+   Helper 6 : Validate 12-hour clock inputs
+   ========================================================================== */
+bool isValid12HourTime(int h, int m, int s) {
+    if (h < 1 || h > 12) return false;
+    if (m < 0 || m > 59) return false;
+    if (s < 0 || s > 59) return false;
+    return true;
+}
+
 int main() {
 
     /* =========================================================================
@@ -183,6 +207,45 @@ int main() {
     }
     printDecimal(num);
     cout << endl;
+
+    /* ============================================================================
+      EX26: Read two times (HH:MM:SS within a 12-hour cycle) and compute:
+      1) seconds since last 12 for each time
+      2) elapsed seconds from time1 to time2 (wrapping across 12 if needed)
+      ========================================================================== */
+    constexpr int kCycleSeconds = 12 * 60 * 60; // 43200
+
+    int h1 = 0, m1 = 0, s1 = 0;
+    int h2 = 0, m2 = 0, s2 = 0;
+
+    cout << "EX26 Enter time 1 (HH MM SS in 12-hour format): ";
+    if (!(cin >> h1 >> m1 >> s1)) {
+        cout << "Invalid input. Exiting.\n";
+        return 1;
+    }
+
+    cout << "EX26 Enter time 2 (HH MM SS in 12-hour format): ";
+    if (!(cin >> h2 >> m2 >> s2)) {
+        cout << "Invalid input. Exiting.\n";
+        return 1;
+    }
+
+    if (!isValid12HourTime(h1, m1, s1) || !isValid12HourTime(h2, m2, s2)) {
+        cout << "Invalid time(s). Hours must be 1..12, minutes/seconds 0..59.\n";
+        return 1;
+    }
+
+    int t1 = secondsFromTwelve(h1, m1, s1);
+    int t2 = secondsFromTwelve(h2, m2, s2);
+
+    int diff = t2 - t1;
+    if (diff < 0) {
+        diff += kCycleSeconds; // wrap within the same 12-hour cycle
+    }
+
+    cout << "Seconds since last 12 for time1: " << t1 << "\n";
+    cout << "Seconds since last 12 for time2: " << t2 << "\n";
+    cout << "Elapsed seconds from time1 -> time2: " << diff << "\n\n";
 
     return 0;
 }
